@@ -1,0 +1,20 @@
+{
+    "name": "azbosakov/filesystem-chroot",
+    "description": "Filesystem chroot abstraction - copy, move, delete, list - relative to the defined root dir.",
+    "keywords": ["filesystem", "chroot", "copy", "move", "list", "delete"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksandar Zdravkov Bosakov",
+            "email": "aleksandar.z.bosakov@gmail.com"
+        }
+    ],
+    "version": "1.0.0",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "AZBosakov\\Filesystem\\": "src/"
+        }
+    }
+}
