@@ -36,7 +36,7 @@ class Chroot
      * By default, it's '/' and can be changed to another dir ONLY ONCE.
      * Subsequent changes are forbidden
      * 
-     * @param strin $rootDir
+     * @param string $rootDir
      * @return bool The success or failure of setting the default root
      */
     public static function setDefaultRoot(string $rootDir): bool
@@ -93,7 +93,7 @@ class Chroot
      * Resolve the '//', '.' and '..'
      * 
      * @param string $path
-     * @param sting $relTo The path, used for resolving relative ones.
+     * @param string $relTo The path, used for resolving relative ones.
      * @return ?string Normalized path or null if the path can't be normalized
      */
     public static function normalizePath(string $path, string $relTo = '/'): ?string
@@ -181,7 +181,10 @@ class Chroot
         if ($fsPath == $this->root) {
             return '/';
         }
-        return substr($fsPath, strlen($this->root));
+        $diff = substr($fsPath, strlen($this->root));
+        if ($diff === '') return '/';
+        if ($diff === false or strpos($diff, '/') !== 0) return null;
+        return $diff;
     }
     
     /**
