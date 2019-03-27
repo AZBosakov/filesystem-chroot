@@ -151,8 +151,7 @@ class Chroot
     public function syspath(string $sitePath): ?string
     {
         $sp = $this->realpath($sitePath);
-        if (! isset($sp)) return null;
-        return rtrim("{$this->root}{$sp}", '/');
+        return self::normalizePath("{$this->root}{$sp}");
     }
     
     /**
@@ -175,6 +174,9 @@ class Chroot
         if (! isset($fsPath)) {
             return null;
         }
+        if ($this->root == '/') {
+            return $fsPath;
+        }
         if (strpos($fsPath, $this->root) !== 0) {
             return null;
         }
@@ -182,7 +184,6 @@ class Chroot
             return '/';
         }
         $diff = substr($fsPath, strlen($this->root));
-        if ($diff === '') return '/';
         if ($diff === false or strpos($diff, '/') !== 0) return null;
         return $diff;
     }
@@ -246,11 +247,8 @@ class Chroot
      */
     public function ls(string $glob = '*'): array
     {
-        if (substr($glob, -1) == '/') {
-            $glob .= '*';
-        }
-        $dir = $this->syspath(dirname($glob));
-        return array_map([$this, 'sitepath'], glob($this->syspath($glob)));
+        $sysGlob = $this->syspath($glob);
+        return array_map([$this, 'sitepath'], glob($sysGlob));
     }
     
     
@@ -375,7 +373,9 @@ class Chroot
      */
     public static function rCopy(string $fsSrc, string $fsDst, bool $overwrite = false): bool
     {
-        $fsSrc = realpath($fsSrc);
+        $fsSrc = self::normalizePath($fsSrc, getcwd());
+        
+        if (! file_exists($fsSrc)) return false;
         if (substr($fsDst, -1) == '/') {
             $fsDst .= basename($fsSrc);
         }
