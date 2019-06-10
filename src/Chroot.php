@@ -151,6 +151,7 @@ class Chroot
     public function syspath(string $sitePath): ?string
     {
         $sp = $this->realpath($sitePath);
+        if (! isset($sp)) return null;
         return self::normalizePath("{$this->root}{$sp}");
     }
     
